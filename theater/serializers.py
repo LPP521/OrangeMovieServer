@@ -16,13 +16,18 @@ class TheaterSerializer(serializers.ModelSerializer):
     #         minval = min(minval, scene.price)
     #     return minval
 
+class DateSerializerField(serializers.RelatedField):
+    def to_representation(self, value):
+        return value.strftime("%Y-%m-%d %H:%M")
 
 class SceneSerializer(serializers.ModelSerializer):
     theater = TheaterSerializer()
     movie = MovieSerializer()
+    start = DateSerializerField(read_only=True)
+    end = DateSerializerField(read_only=True)
     class Meta:
         model = Scene
-        fields = ('theater', 'movie', 'price', 'effect', 'start', 'end', 'hall', 'seats')
+        fields = ('pk', 'theater', 'movie', 'price', 'effect', 'start', 'end', 'hall', 'seats')
 
 class HallSerializer(serializers.ModelSerializer):
     theater = TheaterSerializer()

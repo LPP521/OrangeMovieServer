@@ -13,6 +13,7 @@ urlpatterns = [
     path('seats/<int:pk>/', SeatsDetail.as_view()),
     path('pay/<int:pk>/', PayDetail.as_view()),
     path('cities/', get_cities),
+    path('scenes/update/', update_scene),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

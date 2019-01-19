@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import mixins, generics
 from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone
+import datetime
 
 from .models import *
 from .serializers import *
@@ -98,3 +100,21 @@ def get_cities(request):
         {'class': 'Z', 'cities': ['阿坝', '阿克苏', '阿拉善盟', '阿勒泰', '安吉', '安康', '安宁', '安平']}
     ]
     return JsonResponse(cities, safe=False)
+
+@csrf_exempt
+def update_scene(request):
+    # print(request.POST)
+    try:
+        scene = Scene.objects.get(pk=request.POST.get('pk'))
+        movie = Movie.objects.get(pk=request.POST.get('movie'))
+        scene.movie = movie
+        scene.hall = request.POST.get('hall')
+        scene.effect = request.POST.get('effect')
+        scene.price = float(request.POST.get('price'))
+        scene.start = timezone.make_aware(datetime.datetime.strptime(request.POST.get('start'), '%Y-%m-%d %H:%M'))
+        scene.end = timezone.make_aware(datetime.datetime.strptime(request.POST.get('end'), '%Y-%m-%d %H:%M'))
+        scene.save()
+        return JsonResponse({'error': 0})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'error': 1})
